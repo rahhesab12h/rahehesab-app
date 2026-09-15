@@ -1,18 +1,16 @@
 {
   "name": "hesab-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "حسابدار من - اپ رانندگان",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "echo 'No build needed'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "@capacitor/android": "^8.5.2",
-    "@capacitor/cli": "^8.5.2",
-    "@capacitor/core": "^8.5.2"
-  }
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  },
+  "author": "rahhesab12h",
+  "license": "ISC"
 }
