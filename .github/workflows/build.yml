@@ -15,11 +15,28 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-    - uses: android-actions/setup-android@v3
+    - name: Setup Android SDK
+      run: |
+        mkdir -p $HOME/android-sdk/cmdline-tools
+        cd $HOME/android-sdk/cmdline-tools
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+        unzip -q cmdline-tools.zip
+        mv cmdline-tools latest
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+    - name: Accept licenses
+      run: |
+        yes | sdkmanager --licenses || true
+        sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
     - run: npm install
     - run: npx cap add android || true
     - run: npx cap sync android
-    - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+    - name: Build APK
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleDebug
     - uses: actions/upload-artifact@v4
       with:
         name: app-debug
