@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حسابدار من</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; font-weight: 700; }
+body { background: #f0faf4; min-height: 100vh; color: #1a3a25; direction: rtl; transition: background 0.3s, color 0.3s; }
+input, .card-value, .val, .record-amount, .summary-box .val, .leader-points, .vip-price, .leader-score { font-weight: 900; font-variant-numeric: tabular-nums; }
+body.night { background: #0f1a14; color: #d0e8d8; }
+body.night .auth-wrap { background: linear-gradient(160deg, #0a1a0f 0%, #14281a 100%); }
+body.night .auth-card { background: #1a2a20; border-color: #2a4a35; }
+body.night .auth-title { color: #4dd88a; }
+body.night label { color: #a0c4b0; }
+body.night input, body.night select, body.night textarea { background: #0f1a14; border-color: #2a4a35; color: #d0e8d8; }
+body.night .tab { color: #6b8c75; }
+body.night .tabs { background: #0f1a14; border-color: #2a4a35; }
+body.night .card { background: #1a2a20; border-color: #2a4a35; }
+body.night .summary-title { color: #4dd88a; }
+body.night .bottom-nav { background: #1a2a20; border-top-color: #2a4a35; }
+body.night .nav-item { color: #6b8c75; }
+body.night .nav-item.active { color: #4dd88a; }
+body.night .record { background: #1a2a20; }
+body.night .record-type { color: #4dd88a; }
+body.night .record-amount { color: #7ee0a8; }
+body.night .summary-box { background: #1a2a20; border-color: #2a4a35; }
+body.night .summary-box .val { color: #4dd88a; }
+body.night .filter-tabs { background: #0f1a14; border-color: #2a4a35; }
+body.night .type-btn { background: #1a2a20; border-color: #2a4a35; color: #a0c4b0; }
+body.night .chart-container { background: #1a2a20; border-color: #2a4a35; }
+body.night .btn.gray { background: #1a2a20; }
+body.night .btn.red { background: #1a2a20; }
+body.night .plate-real { background: #1a2a20; }
+body.night .plate-real-num, body.night .plate-real-letter, body.night .plate-real-small { color: #d0e8d8; }
+body.night .plate-iran-top { background: #1a2a20; color: #d0e8d8; }
+body.night .vip-card { background: linear-gradient(135deg, #2a2410, #4a3a15); }
+body.night .vip-card h3 { color: #f4c430; }
+body.night .vip-card ul { color: #e0c060; }
+body.night .vip-price { color: #f4c430; }
+body.night .leader-row { background: #1a2a20; border-color: #2a4a35; }
+body.night .leader-name { color: #4dd88a; }
+body.night .leader-points { color: #7ee0a8; }
+body.night .about-card { background: #1a2a20; border-color: #2a4a35; }
+body.night .about-row .val { color: #4dd88a; }
+body.night .goal-box { background: linear-gradient(135deg, #1a3a25, #0a2a18); }
+body.night .goal-box div { color: #7ee0a8 !important; }
+.page { display: none; min-height: 100vh; padding: 20px; }
+.page.active { display: block; }
+.auth-wrap { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 20px; background: linear-gradient(160deg, #e8f8ed 0%, #c8ecd4 100%); }
+.auth-card { background: #fff; border-radius: 24px; padding: 24px 20px; box-shadow: 0 12px 40px rgba(10, 143, 60, 0.15); border: 1px solid #d4ecd9; }
+.auth-logo { text-align: center; font-size: 52px; margin-bottom: 6px; }
+.auth-title { text-align: center; color: #0a8f3c; font-size: 23px; font-weight: bold; margin-bottom: 4px; }
+.auth-sub { text-align: center; color: #6b8c75; font-size: 13px; margin-bottom: 20px; }
+.tabs { display: flex; background: #f0faf4; border-radius: 12px; padding: 5px; margin-bottom: 22px; border: 1px solid #d4ecd9; }
+.tab { flex: 1; padding: 12px; text-align: center; font-size: 15px; font-weight: bold; color: #6b8c75; border-radius: 9px; cursor: pointer; transition: 0.2s; }
+.tab.active { background: linear-gradient(135deg, #1cb15c, #0a8f3c); color: #fff; box-shadow: 0 4px 12px rgba(10, 143, 60, 0.3); }
+.field { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px dashed #d4ecd9; }
+.field:last-of-type { border-bottom: none; }
+label { display: block; font-size: 13px; color: #3d6b4d; margin-bottom: 6px; font-weight: bold; }
+input, select, textarea { width: 100%; padding: 14px; border: 2px solid #d4ecd9; border-radius: 12px; font-size: 15px; text-align: center; direction: ltr; background: #f8fdf9; transition: 0.2s; font-weight: 800; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: #1cb15c; background: #fff; box-shadow: 0 0 0 4px rgba(28, 177, 92, 0.15); }
+textarea { direction: rtl; text-align: right; min-height: 70px; resize: vertical; }
+.btn { width: 100%; padding: 16px; margin-top: 10px; background: linear-gradient(135deg, #1cb15c, #0a8f3c); color: #fff; border: 2px solid #0a8f3c; border-radius: 14px; font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 16px rgba(10, 143, 60, 0.25); }
+.btn:active { transform: scale(0.97); }
+.btn.red { background: #fff; color: #c0392b; border: 2px solid #c0392b; box-shadow: none; padding: 12px; font-size: 14px; }
+.btn.gray { background: #fff; color: #0a8f3c; border: 2px solid #0a8f3c; box-shadow: none; padding: 12px; font-size: 14px; margin-top: 6px; }
+.btn.gold { background: linear-gradient(135deg, #f4c430, #d4a017); color: #fff; border: 2px solid #b8860b; box-shadow: 0 6px 16px rgba(212, 160, 23, 0.35); }
+.hint { text-align: center; font-size: 12px; color: #8ba893; margin-top: 14px; line-height: 1.8; }
+.plate-real { display: flex; direction: ltr; border: 3px solid #000; border-radius: 6px; overflow: hidden; background: #fff; max-width: 360px; margin: 0 auto; height: 75px; position: relative; }
+.plate-iran-top { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; font-size: 11px; font-weight: bold; padding: 0 8px; z-index: 2; line-height: 1.1; }
+.plate-real-blue { background: #1a4d94; color: #fff; padding: 4px 4px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; min-width: 28px; }
+.plate-real-blue .flag { font-size: 12px; line-height: 1; }
+.plate-real-blue .ir-text { font-size: 6px; line-height: 1.1; text-align: center; font-weight: bold; }
+.plate-real-main { flex: 1; display: flex; align-items: center; padding-top: 6px; }
+.plate-real-num { width: 25%; border: none; background: transparent; font-size: 28px; font-weight: bold; text-align: center; direction: ltr; padding: 4px 0; color: #000; }
+.plate-real-letter { width: 25%; border: none; background: transparent; font-size: 28px; font-weight: bold; text-align: center; padding: 4px 0; color: #000; }
+.plate-real-num::placeholder, .plate-real-letter::placeholder { color: #ccc; font-size: 20px; }
+.plate-real-small { width: 25%; border: none; background: transparent; font-size: 22px; font-weight: bold; text-align: center; direction: ltr; padding: 4px 0; color: #000; }
+.plate-real-small::placeholder { color: #ccc; font-size: 16px; }
+.header { background: linear-gradient(135deg, #1cb15c, #0a8f3c); color: #fff; padding: 22px 18px 26px; border-radius: 0 0 24px 24px; margin: -20px -20px 20px -20px; box-shadow: 0 6px 20px rgba(10, 143, 60, 0.25); }
+.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.header-greet { font-size: 14px; opacity: 0.9; }
+.header-name { font-size: 20px; font-weight: bold; }
+.header-date { font-size: 12px; opacity: 0.9; text-align: left; }
+.car-info { background: rgba(255,255,255,0.22); border-radius: 12px; padding: 10px 14px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+.summary-title { font-size: 15px; color: #0a8f3c; font-weight: bold; margin: 16px 4px 10px; }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card { background: #fff; border-radius: 16px; padding: 16px 12px; box-shadow: 0 3px 12px rgba(10, 143, 60, 0.08); text-align: center; border: 1px solid #e0f2e6; }
+.card-label { font-size: 12px; color: #6b8c75; margin-bottom: 6px; }
+.card-value { font-size: 18px; font-weight: 900; color: #0a8f3c; letter-spacing: 0.3px; }
+.card-value small { font-size: 11px; color: #8ba893; font-weight: 500; }
+.card-value.profit { color: #0a8f3c; }
+.card-value.loss { color: #c0392b; }
+.profit-card { background: linear-gradient(135deg, #d4f4de, #b3ebc5); grid-column: span 2; border: 1px solid #8cdca9; }
+.profit-card .card-value { font-size: 26px; color: #0a6b2c; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; justify-content: space-around; padding: 8px 0 12px; box-shadow: 0 -4px 20px rgba(10, 143, 60, 0.12); border-radius: 22px 22px 0 0; z-index: 100; border-top: 2px solid #e0f2e6; }
+.nav-item { flex: 1; text-align: center; font-size: 11px; color: #8ba893; cursor: pointer; padding: 4px; }
+.nav-item .icon { font-size: 22px; display: block; margin-bottom: 2px; }
+.nav-item.active { color: #0a8f3c; font-weight: bold; }
+.page-content { padding-bottom: 90px; }
+.type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.type-btn { padding: 12px 6px; border: 2px solid #d4ecd9; border-radius: 12px; background: #fff; cursor: pointer; text-align: center; font-size: 13px; font-weight: bold; color: #3d6b4d; }
+.type-btn.active { background: linear-gradient(135deg, #1cb15c, #0a8f3c); color: #fff; border-color: #0a8f3c; position: relative; } .type-btn.active::after { content: "✓"; position: absolute; top: 4px; right: 4px; background: #fff; color: #0a8f3c; width: 18px; height: 18px; border-radius: 50%; font-size: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; line-height: 1; }
+.type-btn .emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+.records { margin-top: 16px; }
+.record { background: #fff; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(10, 143, 60, 0.06); border-right: 4px solid #1cb15c; position: relative; }
+.record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.record-type { font-size: 13px; font-weight: bold; color: #0a8f3c; }
+.record-amount { font-size: 16px; font-weight: 900; color: #0a6b2c; letter-spacing: 0.3px; }
+.record-details { font-size: 11px; color: #8ba893; }
+.record-date { font-size: 10px; color: #aaa; margin-top: 4px; }
+.record-del { position: absolute; left: 8px; top: 8px; background: #ffe5e5; color: #c0392b; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; cursor: pointer; }
+.summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+.summary-box { background: #fff; border-radius: 14px; padding: 12px; text-align: center; border: 2px solid #e0f2e6; }
+.summary-box .lbl { font-size: 11px; color: #6b8c75; margin-bottom: 4px; }
+.summary-box .val { font-size: 16px; font-weight: 900; color: #0a8f3c; letter-spacing: 0.3px; }
+.filter-tabs { display: flex; background: #f0faf4; border-radius: 12px; padding: 5px; margin-bottom: 16px; border: 1px solid #d4ecd9; }
+.filter-tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 13px; font-weight: bold; color: #6b8c75; border-radius: 9px; cursor: pointer; }
+.filter-tab.active { background: linear-gradient(135deg, #1cb15c, #0a8f3c); color: #fff; }
+.chart-container { background: #fff; border-radius: 14px; padding: 12px; margin: 16px 0; border: 1px solid #e0f2e6; height: 220px; }
+.vip-card { background: linear-gradient(135deg, #fff9e6, #ffe9a8); border: 2px solid #d4a017; border-radius: 18px; padding: 20px; margin-bottom: 14px; text-align: center; }
+.vip-card h3 { color: #8a6500; font-size: 17px; margin-bottom: 10px; }
+.vip-card ul { list-style: none; text-align: right; font-size: 13px; color: #6b4f00; line-height: 2; margin-bottom: 14px; }
+.vip-card ul li::before { content: "✅ "; }
+.vip-price { font-size: 22px; font-weight: 900; color: #8a6500; margin-bottom: 12px; letter-spacing: 0.5px; }
+.leader-row { display: flex; align-items: center; background: #fff; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(10, 143, 60, 0.06); border: 1px solid #e0f2e6; }
+.leader-rank { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 15px; margin-left: 10px; }
+.rank-1 { background: linear-gradient(135deg, #ffd700, #daa520); color: #fff; }
+.rank-2 { background: linear-gradient(135deg, #c0c0c0, #a8a8a8); color: #fff; }
+.rank-3 { background: linear-gradient(135deg, #cd7f32, #a0522d); color: #fff; }
+.rank-other { background: #e8f8ed; color: #0a8f3c; }
+.leader-info { flex: 1; text-align: right; }
+.leader-name { font-size: 14px; font-weight: bold; color: #0a8f3c; }
+.leader-score { font-size: 12px; color: #8ba893; font-weight: 800; }
+.leader-points { font-size: 15px; font-weight: 900; color: #0a6b2c; }
+.goal-box { background: linear-gradient(135deg, #d4f4de, #b3ebc5); border-radius: 18px; padding: 18px; margin-bottom: 16px; text-align: center; border: 1px solid #8cdca9; }
+.goal-progress { background: #fff; border-radius: 20px; height: 16px; margin: 10px 0; overflow: hidden; }
+.goal-fill { background: linear-gradient(90deg, #1cb15c, #0a8f3c); height: 100%; transition: 0.3s; }
+.about-card { background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #e0f2e6; margin-bottom: 14px; }
+.about-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #e0f2e6; font-size: 14px; }
+.about-row:last-child { border-bottom: none; }
+.about-row .key { color: #6b8c75; }
+.about-row .val { color: #0a8f3c; font-weight: bold; }
+</style>
+
+<style>
+.header-clock { font-size: 13px; font-weight: 900; opacity: 0.95; direction: ltr; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+</style>
+
+<!-- HESAB_CSS_START -->
+<style>
+/* ============ کارت سیاه-طلایی با انیمیشن ============ */
+50% { background-position: 100% 50%; }
+}
+100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+50% { transform: scale(1.15) rotate(5deg); }
+}
+100% { background-position: 200% center; }
+}
+50% { transform: scale(1.2); }
+}
+/* ============ صفحه داستان ============ */
+50% { transform: scale(1.3); opacity: 0.8; }
+}
+to { opacity: 1; transform: translateY(0); }
+}
+50% { transform: translateY(-12px); }
+}
+</style>
+<!-- HESAB_CSS_END -->
+
+<!-- HESAB_CSS_START -->
+<style>
+50% { background-position: 100% 50%; } }
+100% { transform: translateX(100%) translateY(100%) rotate(45deg); } }
+50% { transform: scale(1.15) rotate(5deg); } }
+100% { background-position: 200% center; } }
+50% { transform: scale(1.2); } }
+50% { transform: scale(1.3); opacity: 0.8; } }
+to { opacity: 1; transform: translateY(0); } }
+50% { transform: translateY(-12px); } }
+</style>
+<!-- HESAB_CSS_END -->
+</head>
+<body><div id="page-signup" class="page active">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">🚗</div>
+      <div class="auth-title">حسابدار من</div>
+      <div class="auth-sub">برای رانندگان حرفه‌ای</div>
+      <div class="tabs">
+        <div class="tab active" id="tab-signup" onclick="switchAuthTab('signup')">ثبت‌نام</div>
+        <div class="tab" id="tab-login" onclick="switchAuthTab('login')">ورود</div>
+      </div>
+      <div id="form-signup">
+        <div class="field">
+          <label>کد ملی (۱۰ رقم)</label>
+          <input type="tel" id="signup_national" placeholder="0012345678" maxlength="10" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>شماره موبایل (۱۱ رقم)</label>
+          <input type="tel" id="signup_phone" placeholder="09123456789" maxlength="11" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>نام شما (اختیاری)</label>
+          <input type="text" id="signup_name" placeholder="مثلاً احمد">
+        </div>
+        <button class="btn" onclick="doSignup()">ثبت‌نام</button>
+        <div class="hint">با ثبت‌نام، قوانین استفاده را می‌پذیرید</div>
+      </div>
+      <div id="form-login" style="display:none;">
+        <div class="field">
+          <label>کد ملی (۱۰ رقم)</label>
+          <input type="tel" id="login_national" placeholder="0012345678" maxlength="10" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>شماره موبایل (۱۱ رقم)</label>
+          <input type="tel" id="login_phone" placeholder="09123456789" maxlength="11" inputmode="numeric">
+        </div>
+        <button class="btn" onclick="doLogin()">ورود</button>
+        <div class="hint">فقط کاربرانی که قبلاً ثبت‌نام کرده‌اند</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-car" class="page">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">🚙</div>
+      <div class="auth-title">ثبت خودرو</div>
+      <div class="auth-sub">فقط یک بار انجام می‌شود</div>
+      <div class="field">
+        <label>مدل خودرو</label>
+        <input type="text" id="car_model" placeholder="مثلاً پژو ۲۰۶">
+      </div>
+      <div class="field">
+        <label>سال ساخت</label>
+        <input type="tel" id="car_year" placeholder="۱۴۰۰" maxlength="4" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>پلاک خودرو</label>
+        <div class="plate-real">
+          <div class="plate-iran-top">ایران</div>
+          <div class="plate-real-blue">
+            <div class="flag">🇮🇷</div>
+            <div class="ir-text">I.R.<br>IRAN</div>
+          </div>
+          <div class="plate-real-main">
+            <input type="tel" id="plate_right" class="plate-real-small" placeholder="۷۸" maxlength="2" inputmode="numeric">
+            <input type="tel" id="plate_three" class="plate-real-num" placeholder="۳۴۵" maxlength="3" inputmode="numeric">
+            <input type="text" id="plate_letter" class="plate-real-letter" placeholder="ج" maxlength="1">
+            <input type="tel" id="plate_left" class="plate-real-num" placeholder="۷۹" maxlength="2" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>کیلومتر فعلی</label>
+        <input type="tel" id="car_km" placeholder="125000" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>مصرف بنزین (لیتر در ۱۰۰ کیلومتر)</label>
+        <input type="tel" id="car_consume" value="8" inputmode="numeric">
+      </div>
+      <button class="btn" onclick="doSaveCar()">ذخیره خودرو</button>
+    </div>
+  </div>
+</div>
+
+<div id="page-home" class="page">
+  <div class="page-content">
+    <div class="header">
+      <div class="header-top">
+        <div>
+          <div class="header-greet">✨ خوش آمدی</div>
+          <div class="header-name" id="home_name">کاربر</div>
+        </div>
+        <div class="header-date"><span id="home_date_clock" class="header-clock">--:--:--</span><br><span id="home_date"></span></div>
+      </div>
+      <div class="car-info">
+        <span>🚗 <span id="home_car">—</span></span>
+        <span id="home_plate">—</span>
+      </div>
+    
+
+
+    </div>
+    <div class="summary-title">🎯 هدف امروز</div>
+    <div class="goal-box" id="goal_box">
+      <div style="font-size:13px;color:#0a6b2c;">هدف روزانه: <span id="goal_target">تعیین نشده</span></div>
+      <div class="goal-progress"><div class="goal-fill" id="goal_fill" style="width:0%"></div></div>
+      <div style="font-size:12px;color:#0a6b2c;" id="goal_status">برای تعیین هدف به تنظیمات بروید</div>
+    </div>
+    <div class="summary-title">📊 خلاصه امروز</div>
+    <div class="cards">
+      <div class="card"><div class="card-label">💰 درآمد</div><div class="card-value" id="home_income">۰ <small>تومان</small></div></div>
+      <div class="card"><div class="card-label">💸 هزینه</div><div class="card-value" id="home_expense">۰ <small>تومان</small></div></div>
+      <div class="card profit-card"><div class="card-label">✨ سود امروز</div><div class="card-value profit" id="home_profit">۰ تومان</div></div>
+    </div>
+    <div class="summary-title">🏠 زندگی امروز</div>
+    <div class="cards">
+      <div class="card"><div class="card-label">💸 خرج زندگی</div><div class="card-value" id="home_life">۰ <small>تومان</small></div></div>
+      <div class="card"><div class="card-label">🗓️ این ماه</div><div class="card-value" id="home_life_month">۰ <small>تومان</small></div></div>
+    </div>
+    <div class="summary-title">🏆 امتیاز شما</div>
+    <div class="card" style="text-align:center;">
+      <div class="card-label">مجموع امتیاز</div>
+      <div class="card-value" id="home_points" style="font-size:28px;">۰</div>
+      <div style="font-size:11px;color:#8ba893;margin-top:6px;">هر فعالیت = ۵ امتیاز</div>
+    </div>
+    <button class="btn red" onclick="doLogout()" style="margin-top:24px;">خروج از حساب</button>
+    <button class="btn gray" onclick="doDeleteAccount()">پاک کردن کامل حساب</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab(this,'home')"><span class="icon">🏠</span>خانه</div>
+    <div class="nav-item" onclick="switchTab(this,'income')"><span class="icon">💰</span>درآمد</div>
+    <div class="nav-item" onclick="switchTab(this,'expense')"><span class="icon">💸</span>هزینه</div>
+    <div class="nav-item" onclick="switchTab(this,'report')"><span class="icon">📊</span>گزارش</div>
+    <div class="nav-item" onclick="switchTab(this,'more')"><span class="icon">⋯</span>بیشتر</div>
+  </div>
+</div><div id="page-income" class="page">
+  <div class="page-content">
+    <h2 style="color:#0a8f3c;text-align:center;margin-bottom:16px;">💰 ثبت درآمد</h2>
+    <div class="field">
+      <label>نوع درآمد</label>
+      <div class="type-grid">
+        <div class="type-btn active" data-type="اسنپ" onclick="selectIncomeType(this)"><span class="emoji">🚕</span>اسنپ</div>
+        <div class="type-btn" data-type="تپسی" onclick="selectIncomeType(this)"><span class="emoji">🚖</span>تپسی</div>
+        <div class="type-btn" data-type="آژانس" onclick="selectIncomeType(this)"><span class="emoji">🚗</span>آژانس</div>
+        <div class="type-btn" data-type="بار" onclick="selectIncomeType(this)"><span class="emoji">📦</span>بار</div>
+        <div class="type-btn" data-type="پیک" onclick="selectIncomeType(this)"><span class="emoji">🛵</span>پیک</div>
+        <div class="type-btn" data-type="سایر" onclick="selectIncomeType(this)"><span class="emoji">✨</span>سایر</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>تعداد بار / سفر</label>
+      <input type="tel" id="income_count" placeholder="10" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>قیمت هر بار (تومان)</label>
+      <input type="tel" id="income_per" placeholder="50000" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>مبلغ کل (تومان) — خودکار محاسبه می‌شود</label>
+      <input type="tel" id="income_total" placeholder="500000" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>کیلومتر</label>
+      <input type="tel" id="income_km" placeholder="100" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>ساعت کارکرد</label>
+      <input type="tel" id="income_hours" placeholder="8" inputmode="numeric">
+    </div>
+    <button class="btn" onclick="saveIncome()">ثبت درآمد</button>
+    <div class="summary-title" style="margin-top:24px;">📊 مجموع شما</div>
+    <div class="summary-grid">
+      <div class="summary-box"><div class="lbl">امروز</div><div class="val" id="sum_today">۰</div></div>
+      <div class="summary-box"><div class="lbl">این هفته</div><div class="val" id="sum_week">۰</div></div>
+      <div class="summary-box"><div class="lbl">این ماه</div><div class="val" id="sum_month">۰</div></div>
+      <div class="summary-box"><div class="lbl">کل</div><div class="val" id="sum_all">۰</div></div>
+    </div>
+    <div class="summary-title">📜 رکوردها</div>
+    <div id="income_list" class="records"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="switchTab(this,'home')"><span class="icon">🏠</span>خانه</div>
+    <div class="nav-item active" onclick="switchTab(this,'income')"><span class="icon">💰</span>درآمد</div>
+    <div class="nav-item" onclick="switchTab(this,'expense')"><span class="icon">💸</span>هزینه</div>
+    <div class="nav-item" onclick="switchTab(this,'report')"><span class="icon">📊</span>گزارش</div>
+    <div class="nav-item" onclick="switchTab(this,'more')"><span class="icon">⋯</span>بیشتر</div>
+  </div>
+</div>
+
+<div id="page-expense" class="page">
+  <div class="page-content">
+    <h2 style="color:#0a8f3c;text-align:center;margin-bottom:16px;">💸 ثبت هزینه</h2>
+    <div class="tabs" style="margin-bottom:16px;">
+      <div class="tab active" id="tab-exp-drive" onclick="switchExpTab('drive')">🚗 رانندگی</div>
+      <div class="tab" id="tab-exp-life" onclick="switchExpTab('life')">🏠 زندگی</div>
+    </div>
+    <div id="form-exp-drive">
+      <div class="field">
+        <label>نوع هزینه</label>
+        <div class="type-grid">
+          <div class="type-btn active" data-type="بنزین" onclick="selectExpType(this,'drive')"><span class="emoji">⛽</span>بنزین</div>
+          <div class="type-btn" data-type="تعمیرات" onclick="selectExpType(this,'drive')"><span class="emoji">🔧</span>تعمیرات</div>
+          <div class="type-btn" data-type="عوارض" onclick="selectExpType(this,'drive')"><span class="emoji">🛣️</span>عوارض</div>
+          <div class="type-btn" data-type="پارکینگ" onclick="selectExpType(this,'drive')"><span class="emoji">🅿️</span>پارکینگ</div>
+          <div class="type-btn" data-type="کارواش" onclick="selectExpType(this,'drive')"><span class="emoji">🚿</span>کارواش</div>
+          <div class="type-btn" data-type="سایر" onclick="selectExpType(this,'drive')"><span class="emoji">✨</span>سایر</div>
+        </div>
+      </div>
+      <div class="field"><label>مبلغ (تومان)</label><input type="tel" id="exp_drive_amount" placeholder="100000" inputmode="numeric"></div>
+      <div class="field"><label>توضیحات (اختیاری)</label><textarea id="exp_drive_note" placeholder="مثلاً: بنزین ۲۰ لیتر"></textarea></div>
+      <button class="btn" onclick="saveExpense('drive')">ثبت هزینه رانندگی</button>
+      <div class="summary-title" style="margin-top:24px;">📊 مجموع</div>
+      <div class="summary-grid">
+        <div class="summary-box"><div class="lbl">امروز</div><div class="val" id="exp_drive_today">۰</div></div>
+        <div class="summary-box"><div class="lbl">این ماه</div><div class="val" id="exp_drive_month">۰</div></div>
+      </div>
+      <div class="summary-title">📜 رکوردها</div>
+      <div id="exp_drive_list" class="records"></div>
+    </div>
+    <div id="form-exp-life" style="display:none;">
+      <div class="field">
+        <label>دسته‌بندی</label>
+        <div class="type-grid">
+          <div class="type-btn active" data-type="برق" onclick="selectExpType(this,'life')"><span class="emoji">⚡</span>برق</div>
+          <div class="type-btn" data-type="آب" onclick="selectExpType(this,'life')"><span class="emoji">💧</span>آب</div>
+          <div class="type-btn" data-type="گاز" onclick="selectExpType(this,'life')"><span class="emoji">🔥</span>گاز</div>
+          <div class="type-btn" data-type="شارژ" onclick="selectExpType(this,'life')"><span class="emoji">🗑️</span>شارژ</div>
+          <div class="type-btn" data-type="اینترنت" onclick="selectExpType(this,'life')"><span class="emoji">📱</span>اینترنت</div>
+          <div class="type-btn" data-type="خرید" onclick="selectExpType(this,'life')"><span class="emoji">🛒</span>خرید</div>
+          <div class="type-btn" data-type="پوشاک" onclick="selectExpType(this,'life')"><span class="emoji">👕</span>پوشاک</div>
+          <div class="type-btn" data-type="مدرسه" onclick="selectExpType(this,'life')"><span class="emoji">🎓</span>مدرسه</div>
+          <div class="type-btn" data-type="دارو" onclick="selectExpType(this,'life')"><span class="emoji">💊</span>دارو</div>
+          <div class="type-btn" data-type="اجاره" onclick="selectExpType(this,'life')"><span class="emoji">🏠</span>اجاره</div>
+          <div class="type-btn" data-type="قسط" onclick="selectExpType(this,'life')"><span class="emoji">💳</span>قسط</div>
+          <div class="type-btn" data-type="سایر" onclick="selectExpType(this,'life')"><span class="emoji">✨</span>سایر</div>
+        </div>
+      </div>
+      <div class="field"><label>مبلغ (تومان)</label><input type="tel" id="exp_life_amount" placeholder="200000" inputmode="numeric"></div>
+      <div class="field"><label>توضیحات (اختیاری)</label><textarea id="exp_life_note" placeholder="مثلاً: قبض برق مرداد"></textarea></div>
+      <button class="btn" onclick="saveExpense('life')">ثبت هزینه زندگی</button>
+      <div class="summary-title" style="margin-top:24px;">📊 مجموع</div>
+      <div class="summary-grid">
+        <div class="summary-box"><div class="lbl">امروز</div><div class="val" id="exp_life_today">۰</div></div>
+        <div class="summary-box"><div class="lbl">این ماه</div><div class="val" id="exp_life_month">۰</div></div>
+      </div>
+      <div class="summary-title">📜 رکوردها</div>
+      <div id="exp_life_list" class="records"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="switchTab(this,'home')"><span class="icon">🏠</span>خانه</div>
+    <div class="nav-item" onclick="switchTab(this,'income')"><span class="icon">💰</span>درآمد</div>
+    <div class="nav-item active" onclick="switchTab(this,'expense')"><span class="icon">💸</span>هزینه</div>
+    <div class="nav-item" onclick="switchTab(this,'report')"><span class="icon">📊</span>گزارش</div>
+    <div class="nav-item" onclick="switchTab(this,'more')"><span class="icon">⋯</span>بیشتر</div>
+  </div>
+</div><div id="page-report" class="page">
+  <div class="page-content">
+    <h2 style="color:#0a8f3c;text-align:center;margin-bottom:16px;">📊 گزارش‌ها</h2>
+    <div class="filter-tabs">
+      <div class="filter-tab active" data-range="day" onclick="selectReportRange(this)">روز</div>
+      <div class="filter-tab" data-range="month" onclick="selectReportRange(this)">ماه</div>
+      <div class="filter-tab" data-range="year" onclick="selectReportRange(this)">سال</div>
+      <div class="filter-tab" data-range="all" onclick="selectReportRange(this)">همه</div>
+    </div>
+    <div class="summary-title">🚗 رانندگی</div>
+    <div class="summary-grid">
+      <div class="summary-box"><div class="lbl">مجموع درآمد</div><div class="val" id="rep_income">۰</div></div>
+      <div class="summary-box"><div class="lbl">مجموع هزینه</div><div class="val" id="rep_expense">۰</div></div>
+      <div class="summary-box"><div class="lbl">سود خالص</div><div class="val" id="rep_profit">۰</div></div>
+      <div class="summary-box"><div class="lbl">مجموع کیلومتر</div><div class="val" id="rep_km">۰</div></div>
+      <div class="summary-box"><div class="lbl">مجموع ساعت</div><div class="val" id="rep_hours">۰</div></div>
+      <div class="summary-box"><div class="lbl">مجموع سفر/بار</div><div class="val" id="rep_count">۰</div></div>
+    </div>
+    <div class="summary-title">🏠 زندگی</div>
+    <div class="summary-grid">
+      <div class="summary-box"><div class="lbl">مجموع خرج زندگی</div><div class="val" id="rep_life">۰</div></div>
+    </div>
+    <div class="summary-title">📈 نمودار درآمد و هزینه</div>
+    <div class="chart-container"><canvas id="reportChart"></canvas></div>
+    <button class="btn gray" onclick="printReport()">📄 چاپ / خروجی PDF</button>
+    <div class="summary-title" style="margin-top:24px;">📜 رکوردها</div>
+    <div id="report_list" class="records"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="switchTab(this,'home')"><span class="icon">🏠</span>خانه</div>
+    <div class="nav-item" onclick="switchTab(this,'income')"><span class="icon">💰</span>درآمد</div>
+    <div class="nav-item" onclick="switchTab(this,'expense')"><span class="icon">💸</span>هزینه</div>
+    <div class="nav-item active" onclick="switchTab(this,'report')"><span class="icon">📊</span>گزارش</div>
+    <div class="nav-item" onclick="switchTab(this,'more')"><span class="icon">⋯</span>بیشتر</div>
+  </div>
+</div>
+
+<div id="page-more" class="page">
+  <div class="page-content">
+    <h2 style="color:#0a8f3c;text-align:center;margin-bottom:20px;">⋯ بیشتر</h2>
+    <div class="card" onclick="showPage('leaderboard')" style="cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;padding:18px;">
+      <span style="font-size:16px;font-weight:bold;color:#0a8f3c;">🏆 برترین راننده‌ها</span><span>◀</span>
+    </div>
+    <div class="card" onclick="showPage('goal')" style="cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;padding:18px;">
+      <span style="font-size:16px;font-weight:bold;color:#0a8f3c;">🎯 هدف درآمد</span><span>◀</span>
+    </div>
+    <div class="card" onclick="showPage('reminder')" style="cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;padding:18px;">
+      <span style="font-size:16px;font-weight:bold;color:#0a8f3c;">🔔 یادآوری‌ها</span><span>◀</span>
+    </div>
+    <div class="card" onclick="showPage('about')" style="cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;padding:18px;">
+      <span style="font-size:16px;font-weight:bold;color:#0a8f3c;">ℹ️ درباره ما</span><span>◀</span>
+    </div>
+    <div class="card" onclick="toggleNight()" style="cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;padding:18px;">
+      <span style="font-size:16px;font-weight:bold;color:#0a8f3c;">🌙 حالت شب / روز</span>
+      <span id="night_status" style="color:#0a8f3c;font-weight:bold;">خودکار</span>
+    </div>
+    <div class="gold-support-card" onclick="openGoldSupport()">
+      <div class="gold-support-icon">🎧</div>
+      <div class="gold-support-title">پشتیبانی ۲۴ ساعته</div>
+      <div class="gold-support-sub">کلیک کن و پیام بده</div>
+      <div class="gold-support-arrow">◀</div>
+    </div>
+    <div class="card" onclick="showPage('home')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:18px;">
+      <span style="font-size:16px;font-weight:bold;color:#0a8f3c;">🏠 بازگشت به خانه</span><span>◀</span>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="switchTab(this,'home')"><span class="icon">🏠</span>خانه</div>
+    <div class="nav-item" onclick="switchTab(this,'income')"><span class="icon">💰</span>درآمد</div>
+    <div class="nav-item" onclick="switchTab(this,'expense')"><span class="icon">💸</span>هزینه</div>
+    <div class="nav-item" onclick="switchTab(this,'report')"><span class="icon">📊</span>گزارش</div>
+    <div class="nav-item active" onclick="switchTab(this,'more')"><span class="icon">⋯</span>بیشتر</div>
+  </div>
+</div>
+
+<div id="page-leaderboard" class="page">
+  <div class="page-content">
+    <h2 style="color:#0a8f3c;text-align:center;margin-bottom:8px;">🏆 برترین راننده‌ها</h2>
+    <p style="text-align:center;font-size:12px;color:#8ba893;margin-bottom:20px;">هر فعالیت = ۵ امتیاز | قرعه‌کشی در تلگرام</p>
+    <div id="leader_list"></div>
+    <button class="btn gray" onclick="showPage('more')" style="margin-top:20px;">بازگشت</button>
+  </div>
+</div>
+
+<div id="page-goal" class="page">
+  <div class="page-content">
+    <h2 style="color:#0a8f3c;text-align:center;margin-bottom:20px;">🎯 هدف درآمد</h2>
+    <div class="field"><label>هدف ماهانه (تومان)</label><input type="tel" id="g_monthly" placeholder="50000000" inputmode="numeric"></div>
+    <div class="field"><label>هدف هفتگی (تومان) — اختیاری</label><input type="tel" id="g_weekly" placeholder="12000000" inputmode="numeric"></div>
+    <div class="field"><label>هدف روزانه (تومان) — اختیاری</label><input type="tel" id="g_daily" placeholder="1700000" inputmode="numeric"></div>
+    <button class="btn" onclick="goalSave()">ذخیره اهداف</button>
+    <div class="summary-title" style="margin-top:24px;">📊 وضعیت این ماه</div>
+    <div id="goal_details"></div>
+    <div class="summary-title">📈 نمودار پیشرفت</div>
+    <div class="chart-container"><canvas id="goalChart"></canvas></div>
+    <button class="btn gray" onclick="showPage('more')" style="margin-top:20px;">بازگشت</button>
+  </div>
+</div>
+
+<div id="page-vip" class="page">
+  <div class="page-content">
+    <h2 style="color:#8a6500;text-align:center;margin-bottom:20px;">⭐ نسخه حرفه‌ای</h2>
+    <div class="vip-card">
+      <h3>🚗 رانندگی VIP</h3>
+      <ul><li>محاسبه سود واقعی</li><li>استهلاک خودرو (کیلومتری ۴,۰۰۰ تومان)</li><li>هزینه‌های استثنایی</li><li>سود به ازای هر کیلومتر</li><li>گزارش‌های پیشرفته</li></ul>
+      <div class="vip-price">۱۰۹,۰۰۰ تومان</div>
+    </div>
+    <div class="vip-card">
+      <h3>🏠 زندگی VIP</h3>
+      <ul><li>دسته‌بندی پیشرفته</li><li>بودجه ماهانه</li><li>مقایسه ماه به ماه</li><li>نمودار تفکیکی</li></ul>
+      <div class="vip-price">۴۹,۰۰۰ تومان</div>
+    </div>
+    <div class="vip-card" style="background:linear-gradient(135deg,#ffe9a8,#f4c430);">
+      <h3>⭐ هر دو با هم</h3>
+      <div class="vip-price" style="color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.2);">۱۳۹,۰۰۰ تومان</div>
+      <p style="font-size:12px;color:#fff;">۳۰,۰۰۰ تومان تخفیف</p>
+    </div>
+    <div class="field" style="margin-top:20px;"><label>کد فعال‌سازی</label><input type="text" id="vip_code" placeholder="کد را وارد کنید"></div>
+    <button class="btn gold" onclick="activateVip()">فعال‌سازی VIP</button>
+    <button class="btn gray" onclick="showPage('more')" style="margin-top:16px;">بازگشت</button>
+  </div>
+</div>
+
+<div id="page-about" class="page">
+  <div class="page-content">
+    <h2 style="color:#0a8f3c;text-align:center;margin-bottom:20px;">ℹ️ درباره ما</h2>
+    <div class="about-card">
+      <div style="text-align:center;font-size:48px;margin-bottom:12px;">🚗</div>
+      <div style="text-align:center;font-size:19px;font-weight:bold;color:#0a8f3c;margin-bottom:16px;">حسابدار من</div>
+      <div class="about-row"><span class="key">👤 مالک</span><span class="val">Mohammad Sadeghi</span></div>
+      <div class="about-row"><span class="key">👁️ ناظر</span><span class="val">رضا حمدی</span></div>
+      <div class="about-row"><span class="key">🎬 مجری</span><span class="val">Yasna</span></div>
+      <div class="about-row"><span class="key">🎨 طراح</span><span class="val">Mohammad Sadeghi</span></div>
+      <div class="about-row"><span class="key">📱 نسخه</span><span class="val">1.0.0</span></div>
+      <div class="about-row"><span class="key">📅 سال</span><span class="val">1405</span></div>
+    </div>
+    <div class="about-card">
+      <div style="font-size:14px;color:#3d6b4d;line-height:2;text-align:right;">
+        <strong>🎬 درباره مجری:</strong><br>
+        Yasna مجری این اپلیکیشن است که با هدف کمک به رانندگان اسنپ، تپسی، آژانس و پیک‌ها برای مدیریت بهتر درآمد و هزینه‌ها فعالیت می‌کند.
+      </div>
+    </div>
+    <button class="btn gray" onclick="showPage('more')" style="margin-top:16px;">بازگشت</button>
+  </div>
+</div><script>
+const DB = {
+  get: (key) => JSON.parse(localStorage.getItem('hd_' + key) || 'null'),
+  set: (key, val) => localStorage.setItem('hd_' + key, JSON.stringify(val)),
+  remove: (key) => localStorage.removeItem('hd_' + key),
+  clearAll: () => { ['user','car','incomes','expenses','goals','reminders','vip','night'].forEach(k => localStorage.removeItem('hd_' + k)); }
+};
+
+function toJalali(date) { return date.toLocaleDateString('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' }); }
+function toJalaliLong(date) { return date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }); }
+function todayKey() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+function dateKey(d) { return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+function startOfWeek() { const d = new Date(); const day = d.getDay(); const diff = d.getDate() - day + (day === 6 ? 0 : 1); return new Date(d.setDate(diff)); }
+function startOfMonth() { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); }
+function isSameDay(ts, ref) { return dateKey(new Date(ts)) === dateKey(ref); }
+function isThisWeek(ts) { return ts >= startOfWeek().getTime(); }
+function isThisMonth(ts) { return ts >= startOfMonth().getTime(); }
+
+function fmt(n) { return Math.round(n || 0).toLocaleString('fa-IR', { useGrouping: true, maximumFractionDigits: 0 }); }
+function fmtShort(n) {
+  n = n || 0;
+  if (n >= 1000000000) return (n/1000000000).toFixed(1).replace('.0','') + ' میلیارد';
+  if (n >= 1000000) return (n/1000000).toFixed(1).replace('.0','') + ' میلیون';
+  if (n >= 1000) return (n/1000).toFixed(0) + ' هزار';
+  return fmt(n);
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + id);
+  if (el) { el.classList.add('active'); window.scrollTo(0,0); }
+  if (id === 'home') refreshHome();
+  if (id === 'hesab-story') { storyStep = 0; updateStory(); }
+  if (id === 'goal') goalRefresh();
+  if (id === 'income') refreshIncomePage();
+  if (id === 'expense') refreshExpensePage();
+  if (id === 'report') refreshReport();
+  if (id === 'leaderboard') refreshLeaderboard();
+  if (id === 'goal') goalRefresh();
+  if (id === 'reminder') refreshReminders();
+}
+
+function switchTab(el, tab) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  showPage(tab);
+}
+
+function switchAuthTab(tab) {
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+}
+
+function doSignup() {
+  const national = document.getElementById('signup_national').value.trim();
+  const phone = document.getElementById('signup_phone').value.trim();
+  const name = document.getElementById('signup_name').value.trim();
+  if (!/^\d{10}$/.test(national)) { alert('کد ملی باید ۱۰ رقم باشد'); return; }
+  if (!/^09\d{9}$/.test(phone)) { alert('شماره موبایل باید با ۰۹ شروع شود و ۱۱ رقم باشد'); return; }
+  const user = { national, phone, name: name || 'کاربر', createdAt: Date.now() };
+  DB.set('user', user);
+  sessionStorage.setItem('hd_logged_in', 'yes');
+  if (DB.get('car')) { goHome(); } else { showPage('car'); }
+}
+
+function doLogin() {
+  const national = document.getElementById('login_national').value.trim();
+  const phone = document.getElementById('login_phone').value.trim();
+  if (!/^\d{10}$/.test(national)) { alert('کد ملی باید ۱۰ رقم باشد'); return; }
+  if (!/^09\d{9}$/.test(phone)) { alert('شماره موبایل باید با ۰۹ شروع شود و ۱۱ رقم باشد'); return; }
+  const user = DB.get('user');
+  if (!user) { alert('هنوز ثبت‌نام نکرده‌ای!'); return; }
+  if (user.national !== national || user.phone !== phone) { alert('اطلاعات ورود اشتباه است'); return; }
+  sessionStorage.setItem('hd_logged_in', 'yes');
+  if (DB.get('car')) { goHome(); } else { showPage('car'); }
+}
+
+function doLogout() { sessionStorage.removeItem('hd_logged_in'); location.reload(); }
+function doDeleteAccount() { if (!confirm('مطمئنی؟ همه اطلاعات پاک می‌شه!')) return; DB.clearAll(); sessionStorage.removeItem('hd_logged_in'); location.reload(); }
+
+function doSaveCar() {
+  const model = document.getElementById('car_model').value.trim();
+  const year = document.getElementById('car_year').value.trim();
+  const right = document.getElementById('plate_right').value.trim();
+  const three = document.getElementById('plate_three').value.trim();
+  const letter = document.getElementById('plate_letter').value.trim();
+  const left = document.getElementById('plate_left').value.trim();
+  const km = document.getElementById('car_km').value.trim();
+  const consume = document.getElementById('car_consume').value.trim();
+  if (!model) { alert('مدل خودرو را وارد کن'); return; }
+  if (!year) { alert('سال ساخت را وارد کن'); return; }
+  if (!right || !three || !letter || !left) { alert('پلاک خودرو را کامل وارد کن'); return; }
+  if (!km || +km < 0) { alert('کیلومتر فعلی را وارد کن'); return; }
+  const plate = left + ' ' + letter + ' ' + three + ' ایران ' + right;
+  const car = { model, year, plate, km: +km, consume: +consume || 8 };
+  DB.set('car', car);
+  goHome();
+}
+
+function goHome() {
+  const user = DB.get('user');
+  const car = DB.get('car');
+  if (!user) { showPage('signup'); return; }
+  if (!car) { showPage('car'); return; }
+  refreshHome();
+  showPage('home');
+}
+
+function refreshHome() {
+  const user = DB.get('user');
+  const car = DB.get('car');
+  if (!user || !car) return;
+  document.getElementById('home_name').textContent = user.name;
+  document.getElementById('home_car').textContent = car.model;
+  document.getElementById('home_plate').textContent = car.plate;
+  document.getElementById('home_date').textContent = toJalaliLong(new Date());
+  const incomes = DB.get('incomes') || [];
+  const expenses = DB.get('expenses') || [];
+  const today = new Date();
+  let todayIncome = 0;
+  incomes.forEach(r => { if (isSameDay(r.ts, today)) todayIncome += r.amount; });
+  let todayExpenseDrive = 0, todayExpenseLife = 0;
+  expenses.forEach(r => {
+    if (isSameDay(r.ts, today)) {
+      if (r.category === 'drive') todayExpenseDrive += r.amount;
+      else todayExpenseLife += r.amount;
+    }
+  });
+  const todayExpense = todayExpenseDrive + todayExpenseLife;
+  const profit = todayIncome - todayExpense;
+  let monthLife = 0;
+  expenses.forEach(r => { if (r.category === 'life' && isThisMonth(r.ts)) monthLife += r.amount; });
+  document.getElementById('home_income').innerHTML = fmt(todayIncome) + ' <small>تومان</small>';
+  document.getElementById('home_expense').innerHTML = fmt(todayExpense) + ' <small>تومان</small>';
+  const profitEl = document.getElementById('home_profit');
+  profitEl.textContent = fmt(profit) + ' تومان';
+  profitEl.className = 'card-value ' + (profit >= 0 ? 'profit' : 'loss');
+  document.getElementById('home_life').innerHTML = fmt(todayExpenseLife) + ' <small>تومان</small>';
+  document.getElementById('home_life_month').innerHTML = fmt(monthLife) + ' <small>تومان</small>';
+  document.getElementById('home_points').textContent = fmt(calculatePoints());
+  refreshGoalBox(todayIncome);
+  const lockEl = document.getElementById('vip_main_lock');
+  if (lockEl) lockEl.textContent = DB.get('vip_active') ? '🔓' : '🔒';
+}
+
+function calculatePoints() {
+  const incomes = DB.get('incomes') || [];
+  let points = 0;
+  incomes.forEach(r => {
+    if (r.count) points += 5;
+    if (r.km) points += 5;
+    if (r.hours) points += 5;
+    if (r.amount) points += 5;
+  });
+  return points;
+}
+
+let selectedIncomeType = 'اسنپ';
+function selectIncomeType(el) {
+  document.querySelectorAll('#page-income .type-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedIncomeType = el.dataset.type;
+}
+
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'income_count' || e.target.id === 'income_per') {
+    const count = +document.getElementById('income_count').value || 0;
+    const per = +document.getElementById('income_per').value || 0;
+    if (count && per) document.getElementById('income_total').value = count * per;
+  }
+});
+
+function saveIncome() {
+  const count = +document.getElementById('income_count').value || 0;
+  const per = +document.getElementById('income_per').value || 0;
+  let amount = +document.getElementById('income_total').value || 0;
+  if (!amount && count && per) amount = count * per;
+  const km = +document.getElementById('income_km').value || 0;
+  const hours = +document.getElementById('income_hours').value || 0;
+  if (!amount) { alert('مبلغ کل را وارد کن'); return; }
+  const incomes = DB.get('incomes') || [];
+  incomes.push({ id: Date.now(), ts: Date.now(), type: selectedIncomeType, count, per, amount, km, hours });
+  DB.set('incomes', incomes);
+  ['income_count','income_per','income_total','income_km','income_hours'].forEach(id => document.getElementById(id).value = '');
+  refreshIncomePage();
+  alert('✅ درآمد ثبت شد');
+}
+
+function refreshIncomePage() {
+  const incomes = DB.get('incomes') || [];
+  const today = new Date();
+  let sum_today = 0, sum_week = 0, sum_month = 0, sum_all = 0;
+  incomes.forEach(r => {
+    sum_all += r.amount;
+    if (isThisMonth(r.ts)) sum_month += r.amount;
+    if (isThisWeek(r.ts)) sum_week += r.amount;
+    if (isSameDay(r.ts, today)) sum_today += r.amount;
+  });
+  document.getElementById('sum_today').textContent = fmtShort(sum_today);
+  document.getElementById('sum_week').textContent = fmtShort(sum_week);
+  document.getElementById('sum_month').textContent = fmtShort(sum_month);
+  document.getElementById('sum_all').textContent = fmtShort(sum_all);
+  const list = document.getElementById('income_list');
+  list.innerHTML = '';
+  const sorted = [...incomes].sort((a,b) => b.ts - a.ts);
+  if (sorted.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:#8ba893;padding:20px;">هنوز درآمدی ثبت نشده</div>';
+    return;
+  }
+  sorted.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'record';
+    div.innerHTML = '<button class="record-del" onclick="deleteIncome(' + r.id + ')">×</button><div class="record-header"><span class="record-type">' + r.type + '</span><span class="record-amount">' + fmt(r.amount) + ' تومان</span></div><div class="record-details">' + (r.count ? '📦 ' + r.count + ' بار' : '') + (r.km ? ' | 🚗 ' + r.km + ' km' : '') + (r.hours ? ' | ⏰ ' + r.hours + ' ساعت' : '') + '</div><div class="record-date">' + toJalali(new Date(r.ts)) + '</div>';
+    list.appendChild(div);
+  });
+}
+
+function deleteIncome(id) {
+  if (!confirm('حذف شود؟')) return;
+  const incomes = DB.get('incomes') || [];
+  DB.set('incomes', incomes.filter(r => r.id !== id));
+  refreshIncomePage();
+  refreshHome();
+}
+
+let selectedExpDrive = 'بنزین';
+let selectedExpLife = 'برق';
+
+function switchExpTab(tab) {
+  document.getElementById('tab-exp-drive').classList.toggle('active', tab === 'drive');
+  document.getElementById('tab-exp-life').classList.toggle('active', tab === 'life');
+  document.getElementById('form-exp-drive').style.display = tab === 'drive' ? 'block' : 'none';
+  document.getElementById('form-exp-life').style.display = tab === 'life' ? 'block' : 'none';
+}
+
+function selectExpType(el, kind) {
+  const container = el.closest('.type-grid');
+  container.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (kind === 'drive') selectedExpDrive = el.dataset.type;
+  else selectedExpLife = el.dataset.type;
+}
+
+function saveExpense(category) {
+  let amount, note, type;
+  if (category === 'drive') {
+    amount = +document.getElementById('exp_drive_amount').value || 0;
+    note = document.getElementById('exp_drive_note').value.trim();
+    type = selectedExpDrive;
+    if (!amount) { alert('مبلغ را وارد کن'); return; }
+    document.getElementById('exp_drive_amount').value = '';
+    document.getElementById('exp_drive_note').value = '';
+  } else {
+    amount = +document.getElementById('exp_life_amount').value || 0;
+    note = document.getElementById('exp_life_note').value.trim();
+    type = selectedExpLife;
+    if (!amount) { alert('مبلغ را وارد کن'); return; }
+    document.getElementById('exp_life_amount').value = '';
+    document.getElementById('exp_life_note').value = '';
+  }
+  const expenses = DB.get('expenses') || [];
+  expenses.push({ id: Date.now(), ts: Date.now(), category, type, amount, note });
+  DB.set('expenses', expenses);
+  refreshExpensePage();
+  refreshHome();
+  alert('✅ هزینه ثبت شد');
+}
+
+function refreshExpensePage() {
+  const expenses = DB.get('expenses') || [];
+  const today = new Date();
+  let drive_today = 0, drive_month = 0, life_today = 0, life_month = 0;
+  expenses.forEach(r => {
+    if (r.category === 'drive') {
+      if (isSameDay(r.ts, today)) drive_today += r.amount;
+      if (isThisMonth(r.ts)) drive_month += r.amount;
+    } else {
+      if (isSameDay(r.ts, today)) life_today += r.amount;
+      if (isThisMonth(r.ts)) life_month += r.amount;
+    }
+  });
+  document.getElementById('exp_drive_today').textContent = fmtShort(drive_today);
+  document.getElementById('exp_drive_month').textContent = fmtShort(drive_month);
+  document.getElementById('exp_life_today').textContent = fmtShort(life_today);
+  document.getElementById('exp_life_month').textContent = fmtShort(life_month);
+  renderExpenseList('exp_drive_list', expenses.filter(r => r.category === 'drive'));
+  renderExpenseList('exp_life_list', expenses.filter(r => r.category === 'life'));
+}
+
+function renderExpenseList(elId, arr) {
+  const list = document.getElementById(elId);
+  list.innerHTML = '';
+  const sorted = [...arr].sort((a,b) => b.ts - a.ts);
+  if (sorted.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:#8ba893;padding:20px;">هنوز هزینه‌ای ثبت نشده</div>';
+    return;
+  }
+  sorted.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'record';
+    div.style.borderRightColor = '#c0392b';
+    div.innerHTML = '<button class="record-del" onclick="deleteExpense(' + r.id + ')">×</button><div class="record-header"><span class="record-type" style="color:#c0392b;">' + r.type + '</span><span class="record-amount" style="color:#c0392b;">' + fmt(r.amount) + ' تومان</span></div>' + (r.note ? '<div class="record-details">' + r.note + '</div>' : '') + '<div class="record-date">' + toJalali(new Date(r.ts)) + '</div>';
+    list.appendChild(div);
+  });
+}
+
+function deleteExpense(id) {
+  if (!confirm('حذف شود؟')) return;
+  const expenses = DB.get('expenses') || [];
+  DB.set('expenses', expenses.filter(r => r.id !== id));
+  refreshExpensePage();
+  refreshHome();
+}
+
+let currentRange = 'day';
+let reportChartInstance = null;
+
+function selectReportRange(el) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentRange = el.dataset.range;
+  refreshReport();
+}
+
+function getRangeStart() {
+  const now = new Date();
+  if (currentRange === 'day') return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (currentRange === 'month') return new Date(now.getFullYear(), now.getMonth(), 1);
+  if (currentRange === 'year') return new Date(now.getFullYear(), 0, 1);
+  return new Date(2000, 0, 1);
+}
+
+function refreshReport() {
+  const start = getRangeStart().getTime();
+  const incomes = (DB.get('incomes') || []).filter(r => r.ts >= start);
+  const expenses = (DB.get('expenses') || []).filter(r => r.ts >= start);
+  let income = 0, km = 0, hours = 0, count = 0;
+  incomes.forEach(r => { income += r.amount; km += r.km || 0; hours += r.hours || 0; count += r.count || 0; });
+  let expenseDrive = 0, expenseLife = 0;
+  expenses.forEach(r => { if (r.category === 'drive') expenseDrive += r.amount; else expenseLife += r.amount; });
+  const expense = expenseDrive + expenseLife;
+  const profit = income - expense;
+  document.getElementById('rep_income').textContent = fmtShort(income);
+  document.getElementById('rep_expense').textContent = fmtShort(expense);
+  document.getElementById('rep_profit').textContent = fmtShort(profit);
+  document.getElementById('rep_km').textContent = fmt(km);
+  document.getElementById('rep_hours').textContent = fmt(hours);
+  document.getElementById('rep_count').textContent = fmt(count);
+  document.getElementById('rep_life').textContent = fmtShort(expenseLife);
+  drawReportChart(incomes, expenses);
+  renderReportList(incomes, expenses);
+}
+
+function drawReportChart(incomes, expenses) {
+  const ctx = document.getElementById('reportChart');
+  if (!ctx) return;
+  if (reportChartInstance) reportChartInstance.destroy();
+  const days = {};
+  const now = new Date();
+  const numDays = currentRange === 'day' ? 7 : currentRange === 'month' ? 30 : currentRange === 'year' ? 12 : 30;
+  for (let i = numDays - 1; i >= 0; i--) {
+    const d = new Date(now);
+    if (currentRange === 'year') d.setMonth(now.getMonth() - i);
+    else d.setDate(now.getDate() - i);
+    const key = currentRange === 'year' ? d.getFullYear() + '-' + (d.getMonth()+1) : dateKey(d);
+    const label = currentRange === 'year' ? d.toLocaleDateString('fa-IR', { month: 'short' }) : d.toLocaleDateString('fa-IR', { month: '2-digit', day: '2-digit' });
+    days[key] = { label, income: 0, expense: 0 };
+  }
+  incomes.forEach(r => { const d = new Date(r.ts); const key = currentRange === 'year' ? d.getFullYear() + '-' + (d.getMonth()+1) : dateKey(d); if (days[key]) days[key].income += r.amount; });
+  expenses.forEach(r => { const d = new Date(r.ts); const key = currentRange === 'year' ? d.getFullYear() + '-' + (d.getMonth()+1) : dateKey(d); if (days[key]) days[key].expense += r.amount; });
+  const labels = Object.values(days).map(d => d.label);
+  const dataIncome = Object.values(days).map(d => d.income);
+  const dataExpense = Object.values(days).map(d => d.expense);
+  reportChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'درآمد', data: dataIncome, backgroundColor: '#1cb15c' }, { label: 'هزینه', data: dataExpense, backgroundColor: '#c0392b' }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+  });
+}
+
+function renderReportList(incomes, expenses) {
+  const all = [];
+  incomes.forEach(r => all.push({ ...r, kind: 'income' }));
+  expenses.forEach(r => all.push({ ...r, kind: 'expense' }));
+  all.sort((a,b) => b.ts - a.ts);
+  const list = document.getElementById('report_list');
+  list.innerHTML = '';
+  if (all.length === 0) { list.innerHTML = '<div style="text-align:center;color:#8ba893;padding:20px;">رکوردی در این بازه نیست</div>'; return; }
+  all.slice(0, 50).forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'record';
+    if (r.kind === 'expense') div.style.borderRightColor = '#c0392b';
+    div.innerHTML = '<div class="record-header"><span class="record-type" style="color:' + (r.kind === 'income' ? '#0a8f3c' : '#c0392b') + ';">' + (r.kind === 'income' ? '💰 ' + r.type : '💸 ' + r.type) + '</span><span class="record-amount" style="color:' + (r.kind === 'income' ? '#0a6b2c' : '#c0392b') + ';">' + fmt(r.amount) + '</span></div><div class="record-date">' + toJalali(new Date(r.ts)) + '</div>';
+    list.appendChild(div);
+  });
+}
+
+function printReport() { window.print(); }
+
+function saveGoals() {
+  const daily = +document.getElementById('goal_daily').value || 0;
+  const weekly = +document.getElementById('goal_weekly').value || 0;
+  const monthly = +document.getElementById('goal_monthly').value || 0;
+  DB.set('goals', { daily, weekly, monthly });
+  refreshGoals();
+  alert('✅ اهداف ذخیره شد');
+}
+
+function refreshGoals() {
+  const goals = DB.get('goals') || { daily: 0, weekly: 0, monthly: 0 };
+  document.getElementById('goal_daily').value = goals.daily || '';
+  document.getElementById('goal_weekly').value = goals.weekly || '';
+  document.getElementById('goal_monthly').value = goals.monthly || '';
+  const incomes = DB.get('incomes') || [];
+  const now = new Date();
+  let day = 0, week = 0, month = 0;
+  incomes.forEach(r => { if (isSameDay(r.ts, now)) day += r.amount; if (isThisWeek(r.ts)) week += r.amount; if (isThisMonth(r.ts)) month += r.amount; });
+  const pct = (v, g) => g > 0 ? Math.min(100, Math.round(v / g * 100)) : 0;
+  document.getElementById('goal_prog_day').textContent = pct(day, goals.daily) + '٪';
+  document.getElementById('goal_prog_week').textContent = pct(week, goals.weekly) + '٪';
+  document.getElementById('goal_prog_month').textContent = pct(month, goals.monthly) + '٪';
+}
+
+function refreshGoalBox(todayIncome) {
+  const goals = DB.get('goals') || { daily: 0 };
+  if (!goals.daily) {
+    document.getElementById('goal_target').textContent = 'تعیین نشده';
+    document.getElementById('goal_fill').style.width = '0%';
+    document.getElementById('goal_status').textContent = 'برای تعیین هدف به «بیشتر ← هدف درآمد» بروید';
+    return;
+  }
+  const pct = Math.min(100, Math.round(todayIncome / goals.daily * 100));
+  document.getElementById('goal_target').textContent = fmt(goals.daily) + ' تومان';
+  document.getElementById('goal_fill').style.width = pct + '%';
+  if (pct >= 100) {
+    document.getElementById('goal_status').textContent = '🎉 هدف امروز رسید!';
+    if (!sessionStorage.getItem('hd_goal_' + todayKey())) { sessionStorage.setItem('hd_goal_' + todayKey(), 'yes'); confetti(); }
+  } else {
+    document.getElementById('goal_status').textContent = pct + '٪ — ' + fmt(goals.daily - todayIncome) + ' تومان مانده';
+  }
+}
+
+function confetti() {
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.textContent = ['🎉','✨','🎊','⭐'][Math.floor(Math.random()*4)];
+    el.style.cssText = 'position:fixed;top:-50px;left:' + (Math.random()*100) + '%;font-size:' + (20+Math.random()*20) + 'px;z-index:9999;pointer-events:none;transition:transform 2s,opacity 2s;';
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.transform = 'translateY(' + (window.innerHeight + 100) + 'px) rotate(' + (Math.random()*720) + 'deg)'; el.style.opacity = '0'; }, 50);
+    setTimeout(() => el.remove(), 2500);
+  }
+}
+
+function saveReminders() {
+  const insurance = document.getElementById('rem_insurance').value.trim();
+  const inspection = document.getElementById('rem_inspection').value.trim();
+  const service = document.getElementById('rem_service').value.trim();
+  DB.set('reminders', { insurance, inspection, service });
+  refreshReminders();
+  alert('✅ یادآوری‌ها ذخیره شد');
+}
+
+function refreshReminders() {
+  const rem = DB.get('reminders') || {};
+  document.getElementById('rem_insurance').value = rem.insurance || '';
+  document.getElementById('rem_inspection').value = rem.inspection || '';
+  document.getElementById('rem_service').value = rem.service || '';
+  const list = document.getElementById('reminder_list');
+  list.innerHTML = '';
+  const items = [{ name: '📄 بیمه', date: rem.insurance }, { name: '📋 معاینه فنی', date: rem.inspection }, { name: '🔧 سرویس دوره‌ای', date: rem.service }];
+  items.forEach(it => {
+    if (!it.date) return;
+    const div = document.createElement('div');
+    div.className = 'record';
+    div.innerHTML = '<div class="record-header"><span class="record-type">' + it.name + '</span></div><div class="record-details">تاریخ: ' + it.date + '</div>';
+    list.appendChild(div);
+  });
+}
+
+function activateVip() {
+  const code = document.getElementById('vip_code').value.trim();
+  if (!code) { alert('کد را وارد کن'); return; }
+  const validCodes = ['VIP2025', 'TEST', '139', 'Yasna1400', 'DEMO'];
+  if (validCodes.includes(code)) {
+    DB.set('vip', { active: true, code, ts: Date.now() });
+    alert('🎉 VIP فعال شد! حالا توی «بیشتر» کارت‌های VIP رو ببین');
+    refreshHome();
+    showPage('vip-full');
+  } else {
+    alert('❌ کد اشتباه است');
+  }
+}
+
+function applyNight() {
+  const manual = DB.get('night');
+  let isNight;
+  if (manual === true) isNight = true;
+  else if (manual === false) isNight = false;
+  else { const h = new Date().getHours(); isNight = h >= 19 || h < 7; }
+  document.body.classList.toggle('night', isNight);
+  const status = document.getElementById('night_status');
+  if (status) status.textContent = manual === null ? 'خودکار' : (manual ? 'شب' : 'روز');
+}
+
+function toggleNight() {
+  const cur = DB.get('night');
+  const next = cur === null ? true : cur === true ? false : null;
+  if (next === null) DB.remove('night');
+  else DB.set('night', next);
+  applyNight();
+}
+
+const SAMPLE_LEADERS = [
+  { name: 'محمد صادقی', points: 2850 },
+  { name: 'رضا حمدی', points: 2470 },
+  { name: 'علی رضایی', points: 2180 },
+  { name: 'حسین کریمی', points: 1890 },
+  { name: 'امیر محمدی', points: 1520 },
+  { name: 'مهدی احمدی', points: 1280 },
+  { name: 'سعید نوری', points: 980 },
+  { name: 'مجید طاهری', points: 740 }
+];
+
+function refreshLeaderboard() {
+  const list = document.getElementById('leader_list');
+  if (!list) return;
+  list.innerHTML = '';
+  const myPoints = calculatePoints();
+  const user = DB.get('user');
+  const all = [...SAMPLE_LEADERS];
+  if (user) all.push({ name: user.name + ' (شما)', points: myPoints, isMe: true });
+  all.sort((a,b) => b.points - a.points);
+  all.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.className = 'leader-row';
+    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other';
+    div.innerHTML = '<div class="leader-rank ' + rankClass + '">' + (i+1) + '</div><div class="leader-info"><div class="leader-name">' + r.name + '</div><div class="leader-score">' + fmt(r.points) + ' امتیاز</div></div><div class="leader-points">' + (['🥇','🥈','🥉'][i] || '') + '</div>';
+    if (r.isMe) div.style.background = 'linear-gradient(135deg,#d4f4de,#b3ebc5)';
+    list.appendChild(div);
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  applyNight();
+  const user = DB.get('user');
+  const car = DB.get('car');
+  const loggedIn = sessionStorage.getItem('hd_logged_in') === 'yes';
+  if (loggedIn && user && car) { goHome(); return; }
+  if (loggedIn && user && !car) { showPage('car'); return; }
+  showPage('signup');
+});
+
+setInterval(applyNight, 5 * 60 * 1000);
+</script>
+
+
+
+<!-- GOAL_V2_START -->
+<style>
+.goal-detail-box { background: #fff; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; border: 2px solid #e0f2e6; display: flex; justify-content: space-between; align-items: center; }
+.goal-detail-box .g-lbl { font-size: 13px; color: #6b8c75; }
+.goal-detail-box .g-val { font-size: 15px; font-weight: 900; color: #0a8f3c; }
+.goal-detail-box.warn { border-color: #f4a460; }
+.goal-detail-box.warn .g-val { color: #d2691e; }
+.goal-detail-box.ok { border-color: #1cb15c; background: #e8f8ed; }
+.goal-detail-box.ok .g-val { color: #0a8f3c; }
+.goal-detail-box.bad { border-color: #c0392b; }
+.goal-detail-box.bad .g-val { color: #c0392b; }
+body.night .goal-detail-box { background: #1a2a20; border-color: #2a4a35; }
+body.night .goal-detail-box .g-lbl { color: #a0c4b0; }
+body.night .goal-detail-box .g-val { color: #4dd88a; }
+</style>
+
+<script>
+// ==================== هدف درآمد (مستقل) ====================
+function goalSave() {
+  const monthly = +document.getElementById('g_monthly').value || 0;
+  const weekly = +document.getElementById('g_weekly').value || 0;
+  const daily = +document.getElementById('g_daily').value || 0;
+  DB.set('goals_v2', { monthly, weekly, daily });
+  goalRefresh();
+  if (typeof refreshHome === 'function') refreshHome();
+  alert('✅ اهداف ذخیره شد');
+}
+
+function goalRefresh() {
+  const goals = DB.get('goals_v2') || { monthly: 0, weekly: 0, daily: 0 };
+  const mEl = document.getElementById('g_monthly');
+  const wEl = document.getElementById('g_weekly');
+  const dEl = document.getElementById('g_daily');
+  if (!mEl) return;
+  mEl.value = goals.monthly || '';
+  wEl.value = goals.weekly || '';
+  dEl.value = goals.daily || '';
+
+  const incomes = DB.get('incomes') || [];
+  const expenses = DB.get('expenses') || [];
+  const now = new Date();
+
+  let monthIncome = 0, monthExpense = 0, weekIncome = 0, dayIncome = 0;
+  incomes.forEach(r => {
+    if (isThisMonth(r.ts)) monthIncome += r.amount;
+    if (isThisWeek(r.ts)) weekIncome += r.amount;
+    if (isSameDay(r.ts, now)) dayIncome += r.amount;
+  });
+  expenses.forEach(r => { if (isThisMonth(r.ts)) monthExpense += r.amount; });
+
+  const monthlyTarget = goals.monthly || 0;
+  const weeklyTarget = goals.weekly || 0;
+  const dailyTarget = goals.daily || (monthlyTarget ? Math.round(monthlyTarget / 30) : 0);
+
+  const daysInM = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  const daysPassed = now.getDate();
+  const daysLeft = daysInM - daysPassed + 1;
+
+  const monthPct = monthlyTarget > 0 ? Math.round(monthIncome / monthlyTarget * 100) : 0;
+  const mustHave = monthlyTarget > 0 ? Math.round(monthlyTarget * daysPassed / daysInM) : 0;
+  const diff = monthIncome - mustHave;
+  const needPerDay = daysLeft > 0 ? Math.max(0, Math.round((monthlyTarget - monthIncome) / daysLeft)) : 0;
+  const profit = monthIncome - monthExpense;
+
+  const box = document.getElementById('goal_details');
+  if (!box) return;
+
+  let html = '';
+  html += '<div class="goal-detail-box"><span class="g-lbl">📅 هدف ماهانه</span><span class="g-val">' + fmt(monthlyTarget) + ' تومان</span></div>';
+  html += '<div class="goal-detail-box ' + (monthPct >= 100 ? 'ok' : '') + '"><span class="g-lbl">📊 درآمد ماه</span><span class="g-val">' + fmt(monthIncome) + ' (' + monthPct + '٪)</span></div>';
+  html += '<div class="goal-detail-box"><span class="g-lbl">💸 هزینه ماه</span><span class="g-val">' + fmt(monthExpense) + ' تومان</span></div>';
+  html += '<div class="goal-detail-box ' + (profit >= 0 ? 'ok' : 'bad') + '"><span class="g-lbl">✨ سود خالص</span><span class="g-val">' + fmt(profit) + ' تومان</span></div>';
+  html += '<div class="goal-detail-box ' + (diff >= 0 ? 'ok' : 'warn') + '"><span class="g-lbl">🎯 باید تا امروز</span><span class="g-val">' + fmt(mustHave) + ' تومان</span></div>';
+  if (diff >= 0) {
+    html += '<div class="goal-detail-box ok"><span class="g-lbl">✅ جلوتر از برنامه</span><span class="g-val">' + fmt(diff) + ' تومان</span></div>';
+  } else {
+    html += '<div class="goal-detail-box bad"><span class="g-lbl">⚠️ عقب‌تر از برنامه</span><span class="g-val">' + fmt(Math.abs(diff)) + ' تومان</span></div>';
+  }
+  html += '<div class="goal-detail-box"><span class="g-lbl">💡 روزانه لازم تا آخر ماه</span><span class="g-val">' + fmt(needPerDay) + ' تومان</span></div>';
+  html += '<div class="goal-detail-box"><span class="g-lbl">📆 روزهای باقی‌مانده</span><span class="g-val">' + daysLeft + ' روز</span></div>';
+
+  if (weeklyTarget > 0) {
+    const wPct = Math.round(weekIncome / weeklyTarget * 100);
+    html += '<div class="goal-detail-box ' + (wPct >= 100 ? 'ok' : '') + '"><span class="g-lbl">📅 هفتگی: ' + fmt(weekIncome) + ' / ' + fmt(weeklyTarget) + '</span><span class="g-val">' + wPct + '٪</span></div>';
+  }
+  if (dailyTarget > 0) {
+    const dPct = Math.round(dayIncome / dailyTarget * 100);
+    html += '<div class="goal-detail-box ' + (dPct >= 100 ? 'ok' : '') + '"><span class="g-lbl">☀️ روزانه: ' + fmt(dayIncome) + ' / ' + fmt(dailyTarget) + '</span><span class="g-val">' + dPct + '٪</span></div>';
+  }
+
+  box.innerHTML = html;
+  goalDrawChart(incomes, monthlyTarget);
+}
+
+let goalChartObj = null;
+function goalDrawChart(incomes, monthlyTarget) {
+  const ctx = document.getElementById('goalChart');
+  if (!ctx) return;
+  if (goalChartObj) goalChartObj.destroy();
+
+  const daysInM = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+  const now = new Date();
+  const dailyData = [];
+  const labels = [];
+  const targetLine = [];
+  let cumulative = 0;
+
+  for (let d = 1; d <= daysInM; d++) {
+    let daySum = 0;
+    incomes.forEach(r => {
+      const rd = new Date(r.ts);
+      if (rd.getFullYear() === now.getFullYear() && rd.getMonth() === now.getMonth() && rd.getDate() === d) daySum += r.amount;
+    });
+    cumulative += daySum;
+    dailyData.push(cumulative);
+    labels.push(d);
+    targetLine.push(monthlyTarget > 0 ? Math.round(monthlyTarget * d / daysInM) : 0);
+  }
+
+  goalChartObj = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'درآمد تجمعی', data: dailyData, borderColor: '#1cb15c', backgroundColor: 'rgba(28,177,92,0.15)', fill: true, tension: 0.3, borderWidth: 3 },
+        { label: 'خط هدف', data: targetLine, borderColor: '#f4a460', borderDash: [6,4], fill: false, tension: 0, borderWidth: 2 }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+  });
+}
+</script>
+<!-- GOAL_V2_END -->
+
+<div id="page-reminder" class="page">
+  <div class="page-content">
+    <h2 style="color:#0a8f3c;text-align:center;margin-bottom:20px;">🔔 یادآوری‌ها</h2>
+    <div class="field"><label>تاریخ تمدید بیمه</label><input type="text" id="rem_insurance" placeholder="1405/08/15" maxlength="10"></div>
+    <div class="field"><label>تاریخ معاینه فنی</label><input type="text" id="rem_inspection" placeholder="1405/10/20" maxlength="10"></div>
+    <div class="field"><label>تاریخ سرویس دوره‌ای</label><input type="text" id="rem_service" placeholder="1405/07/01" maxlength="10"></div>
+    <button class="btn" onclick="saveReminders()">ذخیره یادآوری‌ها</button>
+    <div class="summary-title" style="margin-top:24px;">📋 اعلان‌ها</div>
+    <div id="reminder_list"></div>
+    <button class="btn gray" onclick="showPage('more')" style="margin-top:20px;">بازگشت</button>
+  </div>
+</div>
+
+<!-- SUPPORT_V2_START -->
+<style>
+.gold-support-card {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+  border-radius: 22px;
+  padding: 28px 22px;
+  margin: 18px 4px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 12px 35px rgba(255, 165, 0, 0.55), 0 0 0 4px rgba(255, 215, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  border: 3px solid #FF8C00;
+}
+.gold-support-card::before {
+  content: "";
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 65%);
+  animation: goldPulse 3s infinite;
+}
+@keyframes goldPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+.gold-support-card:active { transform: scale(0.97); }
+.gold-support-icon {
+  font-size: 64px;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.25));
+}
+.gold-support-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  letter-spacing: 0.5px;
+}
+.gold-support-sub {
+  font-size: 14px;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  opacity: 1;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.gold-support-arrow {
+  font-size: 26px;
+  margin-top: 14px;
+  position: relative;
+  z-index: 1;
+  animation: goldBounce 1.5s infinite;
+  color: #fff;
+}
+@keyframes goldBounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-12px); }
+}
+body.night .gold-support-card { box-shadow: 0 12px 35px rgba(255, 165, 0, 0.35), 0 0 0 4px rgba(255, 215, 0, 0.2); }
+</style>
+
+<script>
+function openGoldSupport() {
+  window.open('https://eitaa.com/Hesabdarman', '_blank');
+}
+</script>
+<!-- SUPPORT_V2_END -->
+
+
+
+
+
+
+
+<script>
+function startHeaderClock() {
+  const el = document.getElementById('home_date_clock');
+  if (!el) return;
+  function tick() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    el.textContent = h + ':' + m + ':' + s;
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+document.addEventListener('DOMContentLoaded', () => setTimeout(startHeaderClock, 800));
+</script>
+
+<!-- VIP_PAGE_START -->
+<style>
+.vip-tabs { display: flex; background: #fff9e6; border-radius: 12px; padding: 5px; margin-bottom: 16px; border: 2px solid #d4a017; }
+.vip-tab { flex: 1; padding: 10px 6px; text-align: center; font-size: 13px; font-weight: bold; color: #8a6500; border-radius: 9px; cursor: pointer; }
+.vip-tab.active { background: linear-gradient(135deg, #f4c430, #d4a017); color: #fff; }
+.vip-sub-card { background: linear-gradient(135deg, #fff9e6, #ffe9a8); border: 2px solid #d4a017; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+.vip-sub-card h4 { color: #8a6500; font-size: 15px; margin-bottom: 10px; }
+.vip-sub-card .vip-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; border-bottom: 1px dashed #e0c060; }
+.vip-sub-card .vip-row:last-child { border-bottom: none; }
+.vip-sub-card .vip-row .k { color: #6b4f00; }
+.vip-sub-card .vip-row .v { color: #8a6500; font-weight: 900; }
+.vip-stat-box { background: #fff; border: 2px solid #e0f2e6; border-radius: 14px; padding: 14px; margin-bottom: 10px; text-align: center; }
+.vip-stat-box .lbl { font-size: 12px; color: #6b8c75; margin-bottom: 6px; }
+.vip-stat-box .val { font-size: 20px; font-weight: 900; color: #0a8f3c; }
+.vip-exception-btn { background: #fff; border: 2px solid #c0392b; color: #c0392b; border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer; text-align: right; font-weight: bold; font-size: 14px; width: 100%; }
+</style>
+
+<div id="page-vip-lock" class="page">
+  <div class="page-content">
+    <div class="vip-lock-box">
+      <div class="vip-lock-icon">🔒</div>
+      <div class="vip-lock-title">نسخه حرفه‌ای VIP</div>
+      <div class="vip-lock-desc">
+        ✨ <b>برای دسترسی به VIP:</b><br><br>
+        💳 مبلغ <b>۱۳۹,۰۰۰ تومان</b> را از درگاه کافه بازار پرداخت کنید<br><br>
+        📸 عکس رسید + کد پیگیری را به <b>@Hesabdarman</b> در ایتا ارسال کنید<br><br>
+        🔑 کد فعال‌سازی دریافت کنید و در کادر زیر وارد کنید
+      </div>
+      <div class="vip-lock-price">۱۳۹,۰۰۰ تومان</div>
+      <div class="field" style="margin-top:20px;">
+        <label style="text-align:center;display:block;">🔑 کد فعال‌سازی</label>
+        <input type="text" id="vip_code_input" placeholder="کد را وارد کنید" style="text-align:center;">
+      </div>
+      <button class="btn gold" onclick="vipUnlock()">🔓 فعال‌سازی VIP</button>
+      <button class="btn gray" onclick="showPage('home')" style="margin-top:12px;">بازگشت</button>
+    </div>
+  </div>
+</div>
+
+<!-- صفحه VIP باز شده -->
+<div id="page-vip" class="page">
+  <div class="page-content">
+    <h2 style="color:#8a6500;text-align:center;margin-bottom:8px;font-size:22px;font-weight:900;">⭐ VIP حرفه‌ای</h2>
+    <p style="text-align:center;font-size:12px;color:#8ba893;margin-bottom:20px;">حساب کتاب مستقل و حرفه‌ای</p>
+
+    <div class="vip-tabs">
+      <div class="vip-tab active" id="vt-drive" onclick="vipSwitchTab('drive')">🚗 رانندگی</div>
+      <div class="vip-tab" id="vt-life" onclick="vipSwitchTab('life')">🏠 زندگی</div>
+      <div class="vip-tab" id="vt-sum" onclick="vipSwitchTab('sum')">⭐ خلاصه</div>
+    </div>
+
+    <div id="vf-drive">
+      <div class="vip-gold-card">
+        <h4>📊 سود واقعی رانندگی</h4>
+        <div class="vip-gold-row"><span class="k">💰 درآمد VIP</span><span class="v" id="vd_income">۰</span></div>
+        <div class="vip-gold-row"><span class="k">💸 هزینه VIP</span><span class="v" id="vd_expense">۰</span></div>
+        <div class="vip-gold-row"><span class="k">🚗 استهلاک (۴,۰۰۰/کیلومتر)</span><span class="v" id="vd_dep">۰</span></div>
+        <div class="vip-gold-row"><span class="k">⚠️ هزینه استثنایی</span><span class="v" id="vd_exc">۰</span></div>
+        <div class="vip-gold-row" style="border-top:2px solid #d4a017;margin-top:6px;padding-top:10px;"><span class="k" style="font-weight:900;">✨ سود واقعی</span><span class="v" id="vd_real" style="font-size:16px;">۰</span></div>
+      </div>
+
+      <div class="vip-gold-card">
+        <h4>➕ ثبت درآمد رانندگی</h4>
+        <div class="field"><label>مبلغ (تومان)</label><input type="tel" id="vd_inc_amount" placeholder="500000" inputmode="numeric"></div>
+        <div class="field"><label>کیلومتر</label><input type="tel" id="vd_inc_km" placeholder="100" inputmode="numeric"></div>
+        <div class="field"><label>توضیحات</label><input type="text" id="vd_inc_note" placeholder="اسنپ، تپسی..."></div>
+        <button class="btn gold" onclick="vipAddDriveIncome()">ثبت درآمد</button>
+      </div>
+
+      <div class="vip-gold-card">
+        <h4>➖ ثبت هزینه رانندگی</h4>
+        <div class="field"><label>مبلغ (تومان)</label><input type="tel" id="vd_exp_amount" placeholder="100000" inputmode="numeric"></div>
+        <div class="field"><label>توضیحات</label><input type="text" id="vd_exp_note" placeholder="بنزین، تعمیرات..."></div>
+        <button class="btn gold" onclick="vipAddDriveExpense()">ثبت هزینه</button>
+      </div>
+
+      <div class="vip-gold-card">
+        <h4>⚠️ هزینه استثنایی (کلیک کن)</h4>
+        <button class="vip-exception-btn" onclick="vipAddException('تعمیرات سنگین')">🔧 تعمیرات سنگین</button>
+        <button class="vip-exception-btn" onclick="vipAddException('تصادف')">💥 تصادف</button>
+        <button class="vip-exception-btn" onclick="vipAddException('بیمه')">📄 بیمه</button>
+        <button class="vip-exception-btn" onclick="vipAddException('جریمه')">🎫 جریمه</button>
+        <button class="vip-exception-btn" onclick="vipAddException('لاستیک')">🛞 لاستیک</button>
+        <button class="vip-exception-btn" onclick="vipAddException('اقساط')">💳 اقساط</button>
+        <div id="vip_exc_list" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="vip-gold-card">
+        <h4>📈 سود به ازای هر کیلومتر</h4>
+        <div class="vip-gold-row"><span class="k">🚗 مجموع کیلومتر</span><span class="v" id="vd_total_km">۰</span></div>
+        <div class="vip-gold-row"><span class="k">💵 سود / کیلومتر</span><span class="v" id="vd_per_km">۰</span></div>
+      </div>
+    </div>
+
+    <div id="vf-life" style="display:none;">
+      <div class="vip-gold-card">
+        <h4>📊 خلاصه زندگی</h4>
+        <div class="vip-gold-row"><span class="k">💰 درآمد زندگی</span><span class="v" id="vl_income">۰</span></div>
+        <div class="vip-gold-row"><span class="k">💸 هزینه زندگی</span><span class="v" id="vl_expense">۰</span></div>
+        <div class="vip-gold-row"><span class="k">💵 بودجه ماهانه</span><span class="v" id="vl_budget">۰</span></div>
+        <div class="vip-gold-row"><span class="k">📊 مصرف بودجه</span><span class="v" id="vl_pct">۰٪</span></div>
+        <div class="vip-gold-row" style="border-top:2px solid #d4a017;margin-top:6px;padding-top:10px;"><span class="k" style="font-weight:900;">✨ مانده</span><span class="v" id="vl_remain" style="font-size:16px;">۰</span></div>
+      </div>
+
+      <div class="vip-gold-card">
+        <h4>➕ ثبت درآمد زندگی</h4>
+        <div class="field"><label>مبلغ (تومان)</label><input type="tel" id="vl_inc_amount" placeholder="5000000" inputmode="numeric"></div>
+        <div class="field"><label>توضیحات</label><input type="text" id="vl_inc_note" placeholder="حقوق، یارانه..."></div>
+        <button class="btn gold" onclick="vipAddLifeIncome()">ثبت درآمد</button>
+      </div>
+
+      <div class="vip-gold-card">
+        <h4>➖ ثبت هزینه زندگی</h4>
+        <div class="field"><label>مبلغ (تومان)</label><input type="tel" id="vl_exp_amount" placeholder="200000" inputmode="numeric"></div>
+        <div class="field"><label>توضیحات</label><input type="text" id="vl_exp_note" placeholder="قبض برق، خرید..."></div>
+        <button class="btn gold" onclick="vipAddLifeExpense()">ثبت هزینه</button>
+      </div>
+
+      <div class="vip-gold-card">
+        <h4>💵 بودجه ماهانه زندگی</h4>
+        <div class="field"><label>بودجه (تومان)</label><input type="tel" id="vl_budget_input" placeholder="10000000" inputmode="numeric"></div>
+        <button class="btn gold" onclick="vipSaveLifeBudget()">ذخیره بودجه</button>
+      </div>
+    </div>
+
+    <div id="vf-sum" style="display:none;">
+      <div class="vip-gold-card">
+        <h4>⭐ خلاصه کل VIP</h4>
+        <div class="vip-gold-row"><span class="k">🚗 درآمد رانندگی</span><span class="v" id="vs_drive_inc">۰</span></div>
+        <div class="vip-gold-row"><span class="k">🏠 درآمد زندگی</span><span class="v" id="vs_life_inc">۰</span></div>
+        <div class="vip-gold-row"><span class="k">💸 هزینه رانندگی</span><span class="v" id="vs_drive_exp">۰</span></div>
+        <div class="vip-gold-row"><span class="k">💸 هزینه زندگی</span><span class="v" id="vs_life_exp">۰</span></div>
+        <div class="vip-gold-row" style="border-top:2px solid #d4a017;margin-top:6px;padding-top:10px;"><span class="k" style="font-weight:900;">💰 سود خالص کل</span><span class="v" id="vs_net" style="font-size:18px;">۰</span></div>
+      </div>
+
+      <div class="summary-title">📈 نمودار درآمد و هزینه</div>
+      <div class="vip-chart-box"><canvas id="vipChart"></canvas></div>
+
+      <div class="vip-gold-card">
+        <h4>📄 گزارش</h4>
+        <button class="btn gray" onclick="window.print()" style="margin-bottom:8px;">📄 چاپ / PDF</button>
+        <button class="btn gold" onclick="vipExportCSV()">📊 خروجی Excel (CSV)</button>
+      </div>
+    </div>
+
+    <button class="btn gray" onclick="showPage('home')" style="margin-top:20px;">بازگشت</button>
+  </div>
+</div>
+
+<script>
+const VIP_CODES = ['VIP2025', 'VIP2025-A', 'VIP2025-B', 'VIP2025-C', 'VIP2025-D'];
+
+function vipUnlock() {
+  const code = document.getElementById('vip_code_input').value.trim();
+  const used = DB.get('vip_used_codes') || [];
+  if (!VIP_CODES.includes(code)) { alert('❌ کد اشتباه است'); return; }
+  if (used.includes(code)) { alert('❌ این کد قبلاً استفاده شده'); return; }
+  used.push(code);
+  DB.set('vip_used_codes', used);
+  DB.set('vip_active', true);
+  alert('🎉 VIP فعال شد!');
+  showPage('vip');
+  vipRefresh();
+}
+
+function vipOpen() {
+  if (DB.get('vip_active')) { showPage('vip'); vipRefresh(); }
+  else { showPage('vip-lock'); }
+}
+
+function vipSwitchTab(tab) {
+  ['drive','life','sum'].forEach(t => {
+    const tabEl = document.getElementById('vt-' + t);
+    const formEl = document.getElementById('vf-' + t);
+    if (tabEl) tabEl.classList.toggle('active', t === tab);
+    if (formEl) formEl.style.display = t === tab ? 'block' : 'none';
+  });
+  vipRefresh();
+}
+
+function vipRefresh() {
+  const dInc = (DB.get('vip_drive_incomes') || []).filter(r => isThisMonth(r.ts));
+  const dExp = (DB.get('vip_drive_expenses') || []).filter(r => isThisMonth(r.ts));
+  const lInc = (DB.get('vip_life_incomes') || []).filter(r => isThisMonth(r.ts));
+  const lExp = (DB.get('vip_life_expenses') || []).filter(r => isThisMonth(r.ts));
+  const exc = DB.get('vip_exceptions') || [];
+  let dIncSum = 0, dExpSum = 0, dKm = 0;
+  dInc.forEach(r => { dIncSum += r.amount; dKm += r.km || 0; });
+  dExp.forEach(r => dExpSum += r.amount);
+  let lIncSum = 0, lExpSum = 0;
+  lInc.forEach(r => lIncSum += r.amount);
+  lExp.forEach(r => lExpSum += r.amount);
+  const excSum = exc.reduce((s, e) => s + e.amount, 0);
+  const dep = dKm * 4000;
+  const dReal = dIncSum - dExpSum - dep - excSum;
+  const perKm = dKm > 0 ? dReal / dKm : 0;
+  const budget = DB.get('vip_life_budget') || 0;
+  const st = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  st('vd_income', fmt(dIncSum) + ' تومان');
+  st('vd_expense', fmt(dExpSum) + ' تومان');
+  st('vd_dep', fmt(dep) + ' تومان');
+  st('vd_exc', fmt(excSum) + ' تومان');
+  st('vd_real', fmt(dReal) + ' تومان');
+  st('vd_total_km', fmt(dKm) + ' کیلومتر');
+  st('vd_per_km', fmt(Math.round(perKm)) + ' تومان');
+  st('vl_income', fmt(lIncSum) + ' تومان');
+  st('vl_expense', fmt(lExpSum) + ' تومان');
+  st('vl_budget', fmt(budget) + ' تومان');
+  st('vl_pct', (budget > 0 ? Math.round(lExpSum / budget * 100) : 0) + '٪');
+  st('vl_remain', fmt(budget - lExpSum) + ' تومان');
+  const bEl = document.getElementById('vl_budget_input');
+  if (bEl) bEl.value = budget || '';
+  st('vs_drive_inc', fmt(dIncSum) + ' تومان');
+  st('vs_life_inc', fmt(lIncSum) + ' تومان');
+  st('vs_drive_exp', fmt(dExpSum + dep + excSum) + ' تومان');
+  st('vs_life_exp', fmt(lExpSum) + ' تومان');
+  st('vs_net', fmt((dIncSum + lIncSum) - (dExpSum + dep + excSum + lExpSum)) + ' تومان');
+  const list = document.getElementById('vip_exc_list');
+  if (list) {
+    list.innerHTML = '';
+    exc.forEach((e, i) => {
+      const div = document.createElement('div');
+      div.className = 'record';
+      div.style.borderRightColor = '#c0392b';
+      div.innerHTML = '<button class="record-del" onclick="vipRemoveException(' + i + ')">×</button><div class="record-header"><span class="record-type" style="color:#c0392b;">⚠️ ' + e.type + '</span><span class="record-amount" style="color:#c0392b;">' + fmt(e.amount) + ' تومان</span></div>';
+      list.appendChild(div);
+    });
+  }
+  vipDrawChart(dInc, dExp, lInc, lExp);
+}
+
+function vipAddDriveIncome() {
+  const amount = +document.getElementById('vd_inc_amount').value || 0;
+  const km = +document.getElementById('vd_inc_km').value || 0;
+  const note = document.getElementById('vd_inc_note').value.trim();
+  if (!amount) { alert('مبلغ را وارد کن'); return; }
+  const arr = DB.get('vip_drive_incomes') || [];
+  arr.push({ ts: Date.now(), amount, km, note });
+  DB.set('vip_drive_incomes', arr);
+  document.getElementById('vd_inc_amount').value = '';
+  document.getElementById('vd_inc_km').value = '';
+  document.getElementById('vd_inc_note').value = '';
+  vipRefresh();
+  alert('✅ ثبت شد');
+}
+
+function vipAddDriveExpense() {
+  const amount = +document.getElementById('vd_exp_amount').value || 0;
+  const note = document.getElementById('vd_exp_note').value.trim();
+  if (!amount) { alert('مبلغ را وارد کن'); return; }
+  const arr = DB.get('vip_drive_expenses') || [];
+  arr.push({ ts: Date.now(), amount, note });
+  DB.set('vip_drive_expenses', arr);
+  document.getElementById('vd_exp_amount').value = '';
+  document.getElementById('vd_exp_note').value = '';
+  vipRefresh();
+  alert('✅ ثبت شد');
+}
+
+function vipAddLifeIncome() {
+  const amount = +document.getElementById('vl_inc_amount').value || 0;
+  const note = document.getElementById('vl_inc_note').value.trim();
+  if (!amount) { alert('مبلغ را وارد کن'); return; }
+  const arr = DB.get('vip_life_incomes') || [];
+  arr.push({ ts: Date.now(), amount, note });
+  DB.set('vip_life_incomes', arr);
+  document.getElementById('vl_inc_amount').value = '';
+  document.getElementById('vl_inc_note').value = '';
+  vipRefresh();
+  alert('✅ ثبت شد');
+}
+
+function vipAddLifeExpense() {
+  const amount = +document.getElementById('vl_exp_amount').value || 0;
+  const note = document.getElementById('vl_exp_note').value.trim();
+  if (!amount) { alert('مبلغ را وارد کن'); return; }
+  const arr = DB.get('vip_life_expenses') || [];
+  arr.push({ ts: Date.now(), amount, note });
+  DB.set('vip_life_expenses', arr);
+  document.getElementById('vl_exp_amount').value = '';
+  document.getElementById('vl_exp_note').value = '';
+  vipRefresh();
+  alert('✅ ثبت شد');
+}
+
+function vipAddException(type) {
+  const amount = prompt('مبلغ ' + type + ' (تومان):');
+  if (!amount || isNaN(amount)) return;
+  const arr = DB.get('vip_exceptions') || [];
+  arr.push({ ts: Date.now(), type, amount: +amount });
+  DB.set('vip_exceptions', arr);
+  vipRefresh();
+}
+
+function vipRemoveException(i) {
+  if (!confirm('حذف شود؟')) return;
+  const arr = DB.get('vip_exceptions') || [];
+  arr.splice(i, 1);
+  DB.set('vip_exceptions', arr);
+  vipRefresh();
+}
+
+function vipSaveLifeBudget() {
+  const b = +document.getElementById('vl_budget_input').value || 0;
+  DB.set('vip_life_budget', b);
+  vipRefresh();
+  alert('✅ ذخیره شد');
+}
+
+let vipChartObj = null;
+function vipDrawChart(dInc, dExp, lInc, lExp) {
+  const ctx = document.getElementById('vipChart');
+  if (!ctx) return;
+  if (vipChartObj) vipChartObj.destroy();
+  const days = 30;
+  const now = new Date();
+  const labels = [], dIncData = [], dExpData = [], lIncData = [], lExpData = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    labels.push(d.toLocaleDateString('fa-IR', { month: '2-digit', day: '2-digit' }));
+    let di = 0, de = 0, li = 0, le = 0;
+    dInc.forEach(r => { if (dateKey(new Date(r.ts)) === dateKey(d)) di += r.amount; });
+    dExp.forEach(r => { if (dateKey(new Date(r.ts)) === dateKey(d)) de += r.amount; });
+    lInc.forEach(r => { if (dateKey(new Date(r.ts)) === dateKey(d)) li += r.amount; });
+    lExp.forEach(r => { if (dateKey(new Date(r.ts)) === dateKey(d)) le += r.amount; });
+    dIncData.push(di); dExpData.push(de); lIncData.push(li); lExpData.push(le);
+  }
+  vipChartObj = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets: [
+      { label: 'درآمد رانندگی', data: dIncData, borderColor: '#1cb15c', tension: 0.3 },
+      { label: 'هزینه رانندگی', data: dExpData, borderColor: '#c0392b', tension: 0.3 },
+      { label: 'درآمد زندگی', data: lIncData, borderColor: '#d4a017', tension: 0.3 },
+      { label: 'هزینه زندگی', data: lExpData, borderColor: '#8e44ad', tension: 0.3 }
+    ]},
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } }, scales: { y: { beginAtZero: true } } }
+  });
+}
+
+function vipExportCSV() {
+  let csv = 'نوع,تاریخ,مبلغ,توضیحات\n';
+  (DB.get('vip_drive_incomes') || []).forEach(r => csv += 'درآمد رانندگی,' + toJalali(new Date(r.ts)) + ',' + r.amount + ',' + (r.note || '') + '\n');
+  (DB.get('vip_drive_expenses') || []).forEach(r => csv += 'هزینه رانندگی,' + toJalali(new Date(r.ts)) + ',' + r.amount + ',' + (r.note || '') + '\n');
+  (DB.get('vip_life_incomes') || []).forEach(r => csv += 'درآمد زندگی,' + toJalali(new Date(r.ts)) + ',' + r.amount + ',' + (r.note || '') + '\n');
+  (DB.get('vip_life_expenses') || []).forEach(r => csv += 'هزینه زندگی,' + toJalali(new Date(r.ts)) + ',' + r.amount + ',' + (r.note || '') + '\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'vip_report.csv';
+  a.click();
+}
+</script>
+<!-- VIP_FINAL_END -->
+
+<!-- HESAB_STORY_START -->
